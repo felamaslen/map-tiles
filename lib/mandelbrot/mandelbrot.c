@@ -25,6 +25,7 @@ double mandelbrot_set_test(double val_x, double val_y, double *minMu, double *ma
     }
 
     if (iteration < MAX_ITERATIONS) {
+#if MULTICOLOUR
         double modZ = sqrt(pow(z_test_x, 2) + pow(z_test_y, 2));
         double mu = iteration - (log(log(modZ))) / log(2);
         if (mu > *maxMu) {
@@ -35,6 +36,9 @@ double mandelbrot_set_test(double val_x, double val_y, double *minMu, double *ma
         }
 
         return mu;
+#else
+        return 1.0;
+#endif
     }
     
     return 0.0;
@@ -73,13 +77,15 @@ int generate_mandelbrot_tile(double min_x, double max_y, double tile_size) {
             buffer[(int)(j * width + i)] = val;
 		}
 	}
-	
+
+#if MULTICOLOUR
     // scale buffer values between 0 and 1
 	int count = width * height;
 	while (count) {
 		count--;
 		buffer[count] = (buffer[count] - minMu) / (maxMu - minMu);
 	}
+#endif
 
     output_png(width, height, buffer);
 

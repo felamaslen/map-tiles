@@ -6,6 +6,7 @@
 #include <stdint.h>
 
 void setRGB(png_byte *ptr, double value) {
+#if MULTICOLOUR
     int v = (int)(value * 767);
     if (v < 0) {
         v = 0;
@@ -31,6 +32,13 @@ void setRGB(png_byte *ptr, double value) {
         ptr[1] = 255 - offset;
         ptr[2] = 0;
     }
+#else
+    int v = (int)(value * 255);
+
+    ptr[0] = v;
+    ptr[1] = v;
+    ptr[2] = v;
+#endif
 }
 
 int cleanup_output(FILE *fp, png_infop info_ptr, png_structp png_ptr, png_bytep row, int status) {

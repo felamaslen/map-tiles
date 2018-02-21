@@ -1,3 +1,7 @@
+#ifndef MULTICOLOUR
+#define MULTICOLOUR 0
+#endif
+
 #ifndef OUTPUT_PNG_H
 
 #include <stddef.h>
