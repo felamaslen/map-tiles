@@ -51,7 +51,7 @@ function setupViews(app) {
 }
 
 function setupMandelbrot(app) {
-    app.get('/mandelbrot/:posX/:posY', routeMandelbrot());
+    app.get('/mandelbrot/:posX/:posY/:zoom?', routeMandelbrot());
 }
 
 function run() {

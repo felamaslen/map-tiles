@@ -1,9 +1,10 @@
 const { PNG } = require('pngjs');
 
 const MAX_ITERATIONS = 1000;
-const RESOLUTION = 200;
-const TILE_SIZE_PIXELS = 240;
+const RESOLUTION = 512;
+const TILE_SIZE_PIXELS = 512;
 const MAP_RANGE = [-2, 1, -1, 1];
+const MAX_ZOOM = 10;
 
 function recursiveMandelbrotSetTest(valX, valY, zTestX = 0, zTestY = 0, iteration = 0) {
     // test if Z = X + iY is in the mandelbrot set
@@ -70,8 +71,11 @@ function generateTile(minX, maxY, tileSize) {
     return png.pack();
 }
 
-function getRangeFromTile(tileX, tileY) {
-    const tileSize = 2;
+function getRangeFromTile(tileX, tileY, zoom) {
+    const maxTileSize = Math.min(MAP_RANGE[3] - MAP_RANGE[2], MAP_RANGE[1] - MAP_RANGE[0]);
+    const minTileSize = maxTileSize / 1000;
+
+    const tileSize = maxTileSize + (minTileSize - maxTileSize) * zoom / MAX_ZOOM;
 
     const minX = MAP_RANGE[0] + tileX * tileSize;
     const maxY = MAP_RANGE[3] - tileY * tileSize;
@@ -83,8 +87,11 @@ function routeMandelbrot() {
     return (req, res) => {
         const tileX = Math.round(Number(req.params.posX) || 0);
         const tileY = Math.round(Number(req.params.posY) || 0);
+        const zoom = Math.min(MAX_ZOOM, Math.max(0, Math.floor(Number(req.params.zoom) || 0)));
 
-        const { minX, maxY, tileSize } = getRangeFromTile(tileX, tileY);
+        const { minX, maxY, tileSize } = getRangeFromTile(tileX, tileY, zoom);
+
+        console.log(minX.toFixed(2), maxY.toFixed(2), tileSize.toFixed(2));
 
         const png = generateTile(minX, maxY, tileSize);
 
