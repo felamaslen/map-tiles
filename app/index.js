@@ -3,13 +3,14 @@
 const path = require('path');
 const express = require('express');
 const { version } = require('../package.json');
+const { routeMandelbrot } = require('./mandelbrot');
 
 if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
     require('dotenv').config();
 }
 
 function setupDevServer(app) {
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.SKIP_APP !== 'true' && process.env.NODE_ENV === 'development') {
         const config = require('../webpack.config')();
         const compiler = require('webpack')(config);
 
@@ -49,8 +50,14 @@ function setupViews(app) {
     }));
 }
 
+function setupMandelbrot(app) {
+    app.get('/mandelbrot/:posX/:posY', routeMandelbrot());
+}
+
 function run() {
     const app = express();
+
+    setupMandelbrot(app);
 
     setupViews(app);
 
