@@ -1,17 +1,20 @@
 import { createReducer } from 'redux-create-reducer';
 
-import * as AC from '../constants/actions';
+import * as actions from '../constants/actions';
 
 import initialState from '../initialState';
 
-function createReducerObject(array) {
-    return array.reduce((obj, [type, handler]) => {
-        obj[type] = (state, action) => handler(state, action.payload);
+import * as app from './app.reducer';
 
-        return obj;
-    }, {});
+function createReducerObject(array) {
+    return array.reduce((handlers, [type, handler]) => ({
+        ...handlers,
+        [type]: (state, action) => handler(state, action)
+    }), {});
 }
 
 export default createReducer(initialState, createReducerObject([
+    [actions.TILE_REQUESTED, app.onTileRequested],
+    [actions.TILE_LOADED, app.onTileLoaded]
 ]));
 

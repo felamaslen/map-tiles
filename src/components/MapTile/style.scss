@@ -1,0 +1,11 @@
+.map-tile {
+    position: absolute;
+
+    .img {
+        transition: opacity 1s ease;
+        &.loading {
+            opacity: 0;
+        }
+    }
+}
+
